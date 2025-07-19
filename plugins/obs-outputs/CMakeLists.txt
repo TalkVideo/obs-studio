@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.28...3.30)
 
+include_directories(/home/talkvideo/Source/mbedtls/tf-psa-crypto/include)
+
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
 find_package(MbedTLS REQUIRED)
+set_target_properties(MbedTLS::mbedtls PROPERTIES IMPORTED_LOCATION ${CMAKE_SYSROOT}/usr/local/lib64/libmbedtls.so)
+set_target_properties(MbedTLS::mbedx509 PROPERTIES IMPORTED_LOCATION ${CMAKE_SYSROOT}/usr/local/lib64/libmbedtls.so)
+set_target_properties(MbedTLS::tfpsacrypto PROPERTIES IMPORTED_LOCATION ${CMAKE_SYSROOT}/usr/local/lib64/libmbedtls.so)
+
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG FALSE)
 find_package(ZLIB REQUIRED)
 
@@ -65,6 +71,7 @@ target_compile_options(
   PRIVATE
     $<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-comma>
     $<$<AND:$<PLATFORM_ID:Linux,FreeBSD,OpenBSD>,$<COMPILE_LANG_AND_ID:C,Clang>>:-Wno-error=unreachable-code>
+    -Wno-implicit-function-declaration
 )
 
 target_link_libraries(

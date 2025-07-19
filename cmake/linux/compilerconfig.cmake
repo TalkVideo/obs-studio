@@ -10,6 +10,7 @@ mark_as_advanced(ENABLE_COMPILER_TRACE)
 
 # gcc options for C
 set(
+  -v
   _obs_gcc_c_options
   $<$<BOOL:${OBS_COMPILE_DEPRECATION_AS_WARNING}>:-Wno-error=deprecated-declarations>
   -fno-strict-aliasing

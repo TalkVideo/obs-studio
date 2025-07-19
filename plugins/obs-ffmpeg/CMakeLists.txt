@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.28...3.30)
 
+set(CMAKE_C_FLAGS "-v -Wno-deprecated-declarations")
+set(CMAKE_CXX_FLAGS "-v -Wno-deprecated-declarations")
+
 option(ENABLE_FFMPEG_LOGGING "Enables obs-ffmpeg logging" OFF)
 option(ENABLE_NEW_MPEGTS_OUTPUT "Use native SRT/RIST mpegts output" ON)
 
@@ -26,11 +29,12 @@ target_sources(
     $<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD>:obs-ffmpeg-vaapi.c>
     $<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD>:vaapi-utils.c>
     $<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD>:vaapi-utils.h>
+    $<$<PLATFORM_ID:Windows>:texture-amf-opts.hpp>
+    $<$<PLATFORM_ID:Windows>:texture-amf.cpp>
     obs-ffmpeg-audio-encoders.c
     obs-ffmpeg-av1.c
     obs-ffmpeg-compat.h
     obs-ffmpeg-formats.h
-    obs-ffmpeg-openh264.c
     obs-ffmpeg-hls-mux.c
     obs-ffmpeg-mux.c
     obs-ffmpeg-mux.h
@@ -64,6 +68,7 @@ target_link_libraries(
     FFmpeg::swscale
     FFmpeg::swresample
     $<$<PLATFORM_ID:Windows>:OBS::w32-pthreads>
+    $<$<PLATFORM_ID:Windows>:AMF::AMF>
     $<$<PLATFORM_ID:Windows>:ws2_32>
     $<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD>:Libva::va>
     $<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD>:Libva::drm>
@@ -74,11 +79,6 @@ target_link_libraries(
 )
 
 if(OS_WINDOWS)
-  if(CMAKE_VS_PLATFORM_NAME STREQUAL x64)
-    target_sources(obs-ffmpeg PRIVATE texture-amf-opts.hpp texture-amf.cpp)
-    target_link_libraries(obs-ffmpeg PRIVATE AMF::AMF)
-  endif()
-
   configure_file(cmake/windows/obs-module.rc.in obs-ffmpeg.rc)
   target_sources(obs-ffmpeg PRIVATE obs-ffmpeg.rc)
 endif()

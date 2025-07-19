@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.28...3.30)
+set(CMAKE_C_FLAGS "-v -Wno-deprecated-declarations")
+set(CMAKE_CXX_FLAGS "-v -Wno-deprecated-declarations")
 
 option(ENABLE_WEBRTC "Enable WebRTC Output support" ON)
 if(NOT ENABLE_WEBRTC)
@@ -7,6 +9,7 @@ if(NOT ENABLE_WEBRTC)
 endif()
 
 find_package(LibDataChannel 0.20 REQUIRED)
+set_target_properties(LibDataChannel::LibDataChannel PROPERTIES IMPORTED_LOCATION ${CMAKE_SYSROOT}/usr/local/lib64/libdatachannel.so.0.23)
 find_package(CURL REQUIRED)
 
 add_library(obs-webrtc MODULE)
